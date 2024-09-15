@@ -1,0 +1,33 @@
+Download the Input File:
+Wget http://192.168.3.220/downloads/augustus_inputs/kgp_chr22.fa
+
+Description: This command downloads a FASTA file named kgp_chr22.fa, which contains DNA sequences from chromosome 22 of the Karnataka Genome Project (KGP) sample.
+Significance: The FASTA file is the essential input for gene prediction, containing the DNA sequences on which AUGUSTUS will perform the analysis.
+
+Gene Prediction with AUGUSTUS:
+augustus --genemodel=complete --gff3=on --UTR=off --species=human kgp_chr22.fa --outfile=augustus_kgp_chr22.out
+
+Description: This command runs AUGUSTUS, a tool for gene prediction, using the following options:
+--genemodel=complete: Predicts the complete gene structure, including exons and introns, rather than just individual exons.
+--gff3=on: Outputs the prediction in GFF3 format, a standard format for representing gene annotations.
+--UTR=off: Disables the prediction of untranslated regions (UTRs).
+--species=human: Specifies that the prediction should be tailored for human DNA sequences.
+
+kgp_chr22.fa: The input DNA sequence file.
+--outfile=augustus_kgp_chr22.out: Directs the output to a file named augustus_kgp_chr22.out.
+Significance: AUGUSTUS uses the input DNA sequences to predict the locations of genes, focusing on human-specific gene models. The result is stored in a GFF3 file, useful for downstream analysis.
+
+Rename the Output File:
+mv augustus_kgp_chr22.out augustus_kgp_chr22.gff
+Description: Renames the output file from .out to .gff.
+Significance: Renaming the file to .gff clarifies that the file is in GFF3 format, which is commonly used for storing gene annotations.
+
+
+Convert GFF File to FASTA Format:
+gffread augustus_kgp_chr22.gff -g kgp_chr22.fa -x kgp_chr22_predicted_genes.fa
+Description: This command uses gffread to extract the predicted gene sequences from the GFF file and outputs them into a new FASTA file (kgp_chr22_predicted_genes.fa).
+-g kgp_chr22.fa: Specifies the reference genome file.
+-x kgp_chr22_predicted_genes.fa: Outputs the extracted sequences to a new FASTA file..
+
+Significance: The resulting FASTA file contains the DNA sequences of the predicted genes, which can be used for further biological analysis, such as functional annotation or comparative genomic
+ 
