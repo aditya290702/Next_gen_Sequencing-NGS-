@@ -1,0 +1,25 @@
+wget http://192.168.3.220/downloads/augustus_inputs/kgp_chr22.fa
+(The file was Downloaded - Karnataka Genome sample)
+
+
+
+augustus --genemodel=complete --gff3=on --UTR=off --species=human kgp_chr22.fa
+--outfile=augustus_kgp_chr22.out
+2 mandatory fields ➖ a)Query file with dna sequence and species parameter
+                                    b)Genemodel to predict the complete gene once,instead of only the exons.
+
+mv augustus_kgp_chr22.out augustus_kgp_chr22.gff
+(Rename the .out file to GFF (GENERAL FEATURE FORMAT) 
+
+gffread augustus_kgp_chr22.gff -g kgp_chr22.fa -x kgp_chr22_predicted_genes.fa
+(Convert GFF file to a .fa file)
+
+
+makeblastdb -in chr22.fa -dbtype nucl -out HUMAN_REFERENCE_CHR22
+(Make a blast database for the goven genome from hg19 to hg22
+
+blastn -query kgp_chr22_predicted_genes.fa -db HUMAN_REFERENCE_CHR22 -out blast_kgp_chr22_hg19_chr22.out -outfmt 6 -evalue 1e-5
+(Blast it against the chr file that we got in out blast DB) 
+
+find ~/. -name getAnnoFasta.pl
+
