@@ -1,0 +1,38 @@
+COMMANDS FOR PE SEQUENCING MOTHER AND FATHER
+
+wget http://192.168.3.220/downloads/pe_chr22_6l_father_1.fq
+wget http://192.168.3.220/downloads/pe_chr22_6l_father_2.fq
+wget http://192.168.3.220/downloads/pe_chr22_6l_mother_1.fq
+wget http://192.168.3.220/downloads/pe_chr22_6l_mother_2.fq
+wget http://192.168.3.220/downloads/longest_contig_chr22_5m.fa
+
+bowtie2-build longest_contig_chr22_5m.fa ctg_idx
+bowtie2 -x ctg_idx -1 pe_chr22_6l_mother_1.fq,pe_chr22_6l_father_1.fq -2 pe_chr22_6l_mother_2.fq,pe_chr22_6l_father_2.fq -S mapped.sam
+
+samtools view -bS mapped.sam > mapped.bam
+samtools sort mapped.bam -o mapped_sorted.bam
+
+-Ou -f longest_contig_chr22_5m.fa mapped_sorted.bam|bcftools call -Ou -mv > variants.vcf
+
+bcftools view variants.vcf | less                                                           
+
+http://192.168.3.220/downloads/VCF/chr22_6l_father_ms.vcf
+wget http://192.168.3.220/downloads/VCF/chr22_6l_mother_ms.vcf
+
+
+#(contd.)Finding the Intersections between your vcf file and mother.vcf and father.vcf
+To perform bgzip,we might have to 
+sudo apt install tabix
+
+bgzip variants.vcf 
+bgzip chr22_6l_father_ms.vcf 
+bgzip chr22_6l_mother_ms.vcf 
+bcftools index variants.vcf.gz 
+bcftools index chr22_6l_father_ms.vcf.gz 
+bcftools index chr22_6l_mother_ms.vcf.gz 
+bcftools isec -p variants_father variants.vcf.gz chr22_6l_father_ms.vcf.gz
+bcftools isec -p variants_mother variants.vcf.gz chr22_6l_mother_ms.vcf.gz
+
+bcftools view 0002.vcf | less
+(to view any vcf file)
+
